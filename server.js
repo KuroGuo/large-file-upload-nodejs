@@ -26,25 +26,21 @@ app.get("/files", (req, res) => {
 app.post("/upload", (req, res, next) => {
   const form = formidable({
     multiples: true,
+    uploadDir: 'F:\\games\\PS2',
     maxFileSize: 10 * 1024 * 1024 * 1024, // 10GB
   });
 
   form.parse(req, async (err, fields, files) => {
     if (err) next(err);
     else {
-     await insertDbFileInfo({
-        fields,
-        files: { name: files["my-file"].name, path: files["my-file"].path },
-      });
-
       res.json({ fields, files });
       fileUpload(files["my-file"].path, files["my-file"].name);
+      console.log('filepath', files["my-file"].path)
       rename(
         files["my-file"].path,
-        join(process.cwd(), "uploaded", files["my-file"].name),
+        join('F:\\games\\PS2\\', files["my-file"].name),
         renameErr => {
-          if (renameErr) console.error(renameErr);
-          else logWrite("uploaded");
+          if (renameErr) console.error(renameErr)
         }
       );
     }
@@ -52,7 +48,6 @@ app.post("/upload", (req, res, next) => {
 });
 
 
-app.listen(process.env.PORT, () => {
-  logWrite(`Server running at http://localhost:${process.env.PORT}`);
-  logWrite(JSON.stringify(process.env,null,4));
-});
+app.listen(8080, () => {
+  logWrite(`Server running at http://localhost:${8080}`)
+})
